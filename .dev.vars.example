@@ -1,0 +1,16 @@
+# Nexus Email Sender - Local Development Variables
+# Copy this file to .dev.vars and update with your actual values
+
+# Application Origin (for CORS)
+APP_ORIGIN=http://localhost:8788
+
+# Default email sender (fallback)
+MAIL_FROM_DEFAULT=noreply@yourdomain.com
+
+# Cloudflare Turnstile (use test keys for local development)
+# Test keys always pass verification - use only in development!
+TURNSTILE_SECRET=1x0000000000000000000000000000000AA
+TURNSTILE_SITEKEY=1x00000000000000000000AA
+
+# For production, get real keys from:
+# https://dash.cloudflare.com/?to=/:account/turnstile
