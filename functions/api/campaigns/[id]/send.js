@@ -3,9 +3,11 @@
  * Process next batch of queued campaign jobs and send emails
  */
 
-import { jsonResponse, errorResponse, parseBody, now } from '../../../utils.js';
+import { jsonResponse, errorResponse, parseBody, now, getClientIP } from '../../../utils.js';
 import { generateUUID } from '../../../crypto.js';
 import { sendEmail, replaceVariables } from '../../../mailchannels.js';
+import { verifyTurnstile } from '../../../turnstile.js';
+import { checkUserRateLimit, checkIPRateLimit } from '../../../ratelimit.js';
 
 const BATCH_SIZE = 25; // Number of emails to send per batch
 
@@ -18,10 +20,27 @@ export async function onRequestPost(context) {
         const body = await parseBody(request);
         const { turnstileToken } = body;
         
-        // TODO: Verify Turnstile token
-        // For now, we'll skip this in development
+        // Verify Turnstile token
         if (!turnstileToken) {
             return errorResponse('Turnstile token required', 400);
+        }
+        
+        const clientIP = getClientIP(request);
+        const turnstileResult = await verifyTurnstile(turnstileToken, env.TURNSTILE_SECRET, clientIP);
+        
+        if (!turnstileResult.success) {
+            return errorResponse(`Bot verification failed: ${turnstileResult.error}`, 403);
+        }
+        
+        // Check rate limits (batch send gets BATCH_SIZE allocation)
+        const userLimit = await checkUserRateLimit(env.RATE_LIMIT_KV, user.id);
+        if (!userLimit.allowed || userLimit.remaining < BATCH_SIZE) {
+            return errorResponse(`Insufficient rate limit. Need ${BATCH_SIZE}, have ${userLimit.remaining}. Resets at ${new Date(userLimit.resetAt * 1000).toISOString()}`, 429);
+        }
+        
+        const ipLimit = await checkIPRateLimit(env.RATE_LIMIT_KV, clientIP);
+        if (!ipLimit.allowed) {
+            return errorResponse(`IP rate limit exceeded. Resets at ${new Date(ipLimit.resetAt * 1000).toISOString()}`, 429);
         }
         
         // Get campaign with all needed data

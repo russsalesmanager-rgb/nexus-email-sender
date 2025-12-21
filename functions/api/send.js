@@ -3,9 +3,11 @@
  * Send a single test email
  */
 
-import { jsonResponse, errorResponse, parseBody, isValidEmail } from '../utils.js';
+import { jsonResponse, errorResponse, parseBody, isValidEmail, getClientIP } from '../utils.js';
 import { generateUUID } from '../crypto.js';
 import { sendEmail } from '../mailchannels.js';
+import { verifyTurnstile } from '../turnstile.js';
+import { checkUserRateLimit, checkIPRateLimit } from '../ratelimit.js';
 
 export async function onRequestPost(context) {
     const { request, env, data } = context;
@@ -15,9 +17,27 @@ export async function onRequestPost(context) {
         const body = await parseBody(request);
         const { to_email, subject, html, text, sender_id, turnstileToken } = body;
         
-        // TODO: Verify Turnstile token
+        // Verify Turnstile token
         if (!turnstileToken) {
             return errorResponse('Turnstile token required', 400);
+        }
+        
+        const clientIP = getClientIP(request);
+        const turnstileResult = await verifyTurnstile(turnstileToken, env.TURNSTILE_SECRET, clientIP);
+        
+        if (!turnstileResult.success) {
+            return errorResponse(`Bot verification failed: ${turnstileResult.error}`, 403);
+        }
+        
+        // Check rate limits
+        const userLimit = await checkUserRateLimit(env.RATE_LIMIT_KV, user.id);
+        if (!userLimit.allowed) {
+            return errorResponse(`Rate limit exceeded. Resets at ${new Date(userLimit.resetAt * 1000).toISOString()}`, 429);
+        }
+        
+        const ipLimit = await checkIPRateLimit(env.RATE_LIMIT_KV, clientIP);
+        if (!ipLimit.allowed) {
+            return errorResponse(`IP rate limit exceeded. Resets at ${new Date(ipLimit.resetAt * 1000).toISOString()}`, 429);
         }
         
         // Validate input

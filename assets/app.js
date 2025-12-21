@@ -7,6 +7,60 @@
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => document.querySelectorAll(s);
 
+// --- TURNSTILE HELPER ---
+let turnstileWidgetId = null;
+
+/**
+ * Get Turnstile token (render widget if needed)
+ * @returns {Promise<string>}
+ */
+async function getTurnstileToken() {
+    return new Promise((resolve) => {
+        // Check if Turnstile is loaded
+        if (typeof window.turnstile === 'undefined') {
+            // Fallback for development
+            console.warn('Turnstile not loaded, using bypass token');
+            resolve('bypass-for-now');
+            return;
+        }
+        
+        // Create container if it doesn't exist
+        let container = document.getElementById('turnstile-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'turnstile-container';
+            container.style.position = 'fixed';
+            container.style.top = '50%';
+            container.style.left = '50%';
+            container.style.transform = 'translate(-50%, -50%)';
+            container.style.zIndex = '9999';
+            container.style.background = 'var(--bg-panel)';
+            container.style.padding = '2rem';
+            container.style.borderRadius = '8px';
+            container.style.border = '1px solid var(--primary)';
+            document.body.appendChild(container);
+        }
+        
+        // Render Turnstile widget
+        const widgetId = window.turnstile.render(container, {
+            sitekey: window.TURNSTILE_SITEKEY || '1x00000000000000000000AA', // Test key for development
+            callback: (token) => {
+                // Clean up
+                container.remove();
+                turnstileWidgetId = null;
+                resolve(token);
+            },
+            'error-callback': () => {
+                container.remove();
+                turnstileWidgetId = null;
+                resolve(null);
+            }
+        });
+        
+        turnstileWidgetId = widgetId;
+    });
+}
+
 // --- AUTH MODULE ---
 class Auth {
     static currentUser = null;
@@ -621,8 +675,12 @@ class CampaignManager {
     static async sendBatch(id) {
         if (!UI.confirm('Send next batch of emails?')) return;
 
-        // TODO: Add Turnstile token here
-        const turnstileToken = 'bypass-for-now'; // In production, get from Turnstile widget
+        // Get Turnstile token
+        const turnstileToken = await getTurnstileToken();
+        if (!turnstileToken) {
+            UI.toast('Bot verification failed', 'error');
+            return;
+        }
 
         try {
             const result = await API.sendCampaignBatch(id, turnstileToken);

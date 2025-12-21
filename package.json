@@ -1,0 +1,26 @@
+{
+  "name": "nexus-email-sender",
+  "version": "1.0.0",
+  "description": "Production-ready email campaign management application on Cloudflare Pages",
+  "main": "index.html",
+  "scripts": {
+    "dev": "wrangler pages dev . --compatibility-date=2024-12-01",
+    "deploy": "wrangler pages deploy . --project-name=nexus-email-sender",
+    "db:create": "wrangler d1 create nexus-email-sender-db",
+    "db:migrate": "wrangler d1 execute nexus-email-sender-db --file=./migrations/001_init.sql && wrangler d1 execute nexus-email-sender-db --file=./migrations/002_indexes.sql",
+    "kv:create": "wrangler kv:namespace create RATE_LIMIT_KV"
+  },
+  "keywords": [
+    "email",
+    "campaigns",
+    "cloudflare",
+    "d1",
+    "pages",
+    "workers"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}
