@@ -1,0 +1,19 @@
+name = "nexus-email-sender"
+compatibility_date = "2024-12-21"
+pages_build_output_dir = "."
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "nexus-email-db"
+database_id = "" # Fill this after creating the database
+
+# KV namespace for rate limiting and sessions
+[[kv_namespaces]]
+binding = "KV"
+id = "" # Fill this after creating the KV namespace
+
+# Environment variables (set these in Cloudflare Dashboard)
+# APP_ORIGIN - Your deployment URL (e.g., https://nexus.mailverge.info)
+# TURNSTILE_SITEKEY - Cloudflare Turnstile site key
+# TURNSTILE_SECRET - Cloudflare Turnstile secret key
