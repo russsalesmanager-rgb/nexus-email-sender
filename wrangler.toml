@@ -1,0 +1,20 @@
+name = "nexus-email-sender"
+compatibility_date = "2024-12-01"
+pages_build_output_dir = "./"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "nexus-email-sender-db"
+database_id = "placeholder-create-with-wrangler-d1-create"
+
+# KV namespace for rate limiting
+[[kv_namespaces]]
+binding = "RATE_LIMIT_KV"
+id = "placeholder-create-with-wrangler-kv-namespace-create"
+
+# Environment variables (set in Cloudflare dashboard or via wrangler secret)
+# TURNSTILE_SECRET
+# TURNSTILE_SITEKEY  
+# APP_ORIGIN (e.g., https://nexus.mailverge.info)
+# MAIL_FROM_DEFAULT (fallback sender email)

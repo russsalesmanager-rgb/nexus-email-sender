@@ -1,0 +1,32 @@
+# Wrangler
+.wrangler/
+.dev.vars
+.mf/
+
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.local
+
+# Build artifacts
+dist/
+.cache/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temp
+tmp/
+temp/

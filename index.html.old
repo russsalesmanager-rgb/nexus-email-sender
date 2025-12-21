@@ -349,18 +349,14 @@
         <div class="modal" id="modal-content"></div>
     </div>
 
+    <!-- Load External JavaScript Modules -->
+    <script src="/assets/ui.js"></script>
+    <script src="/assets/api.js"></script>
+    <script src="/assets/router.js"></script>
+    <script src="/assets/app.js"></script>
+    
     <script>
-        /**
-         * NEXUS CORE ENGINE v2.0
-         * 
-         * Includes:
-         * - Multi-GHL Sync (20+ accounts)
-         * - Multi-CRM Sync (Isoquote, Velox, HubSpot, Monday, Salesforce)
-         * - AI Integrations (xAI, ChatGPT, Gemini)
-         * - Conversational AI Task Manager
-         * - Full Settings Page
-         */
-
+        // Legacy compatibility layer - minimal inline code
         // --- 1. UTILS & CANVAS ---
         const $ = (s) => document.querySelector(s);
         const $$ = (s) => document.querySelectorAll(s);
