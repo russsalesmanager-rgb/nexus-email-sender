@@ -1,0 +1,23 @@
+name = "nexus-email-sender"
+compatibility_date = "2024-01-01"
+pages_build_output_dir = "."
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "nexus-db"
+database_id = "placeholder-will-be-created"
+
+# KV namespace for rate limiting and sessions
+[[kv_namespaces]]
+binding = "KV"
+id = "placeholder-will-be-created"
+
+# Environment variables (set in dashboard or .dev.vars for local)
+[vars]
+APP_ORIGIN = "http://localhost:8788"
+MAIL_FROM_DEFAULT = "noreply@example.com"
+
+# For production, set these as secrets:
+# TURNSTILE_SECRET = "your-turnstile-secret"
+# TURNSTILE_SITEKEY = "your-turnstile-sitekey"
