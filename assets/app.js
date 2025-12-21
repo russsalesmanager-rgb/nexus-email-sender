@@ -218,7 +218,10 @@ const App = {
   },
   
   async deleteContact(id) {
-    if (!confirm('Are you sure you want to delete this contact?')) return;
+    // Simple confirmation using native browser confirm for now
+    // Could be enhanced with custom modal in future
+    const confirmed = window.confirm('Are you sure you want to delete this contact?');
+    if (!confirmed) return;
     
     try {
       UI.showPageLoader();
@@ -341,7 +344,8 @@ const App = {
   },
   
   async deleteList(id) {
-    if (!confirm('Are you sure you want to delete this list?')) return;
+    const confirmed = window.confirm('Are you sure you want to delete this list?');
+    if (!confirmed) return;
     
     try {
       UI.showPageLoader();
@@ -432,7 +436,8 @@ const App = {
   },
   
   async deleteTemplate(id) {
-    if (!confirm('Are you sure you want to delete this template?')) return;
+    const confirmed = window.confirm('Are you sure you want to delete this template?');
+    if (!confirmed) return;
     
     try {
       UI.showPageLoader();
@@ -527,7 +532,8 @@ const App = {
   },
   
   async deleteSender(id) {
-    if (!confirm('Are you sure you want to delete this sender?')) return;
+    const confirmed = window.confirm('Are you sure you want to delete this sender?');
+    if (!confirmed) return;
     
     try {
       UI.showPageLoader();
@@ -640,7 +646,8 @@ const App = {
   },
   
   async queueCampaign(id) {
-    if (!confirm('Queue this campaign? This will create send jobs for all contacts in the list.')) return;
+    const confirmed = window.confirm('Queue this campaign? This will create send jobs for all contacts in the list.');
+    if (!confirmed) return;
     
     try {
       UI.showPageLoader();

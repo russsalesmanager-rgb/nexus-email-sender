@@ -3,15 +3,19 @@ compatibility_date = "2024-12-21"
 pages_build_output_dir = "."
 
 # D1 Database binding
+# REQUIRED: Create database with: wrangler d1 create nexus-email-db
+# Then replace database_id with the ID from the output (format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
 [[d1_databases]]
 binding = "DB"
 database_name = "nexus-email-db"
-database_id = "" # Fill this after creating the database
+database_id = "" # REQUIRED: Replace with your D1 database ID
 
 # KV namespace for rate limiting and sessions
+# REQUIRED: Create KV namespace with: wrangler kv:namespace create "nexus-kv"
+# Then replace id with the ID from the output (format: 32 character hex string)
 [[kv_namespaces]]
 binding = "KV"
-id = "" # Fill this after creating the KV namespace
+id = "" # REQUIRED: Replace with your KV namespace ID
 
 # Environment variables (set these in Cloudflare Dashboard)
 # APP_ORIGIN - Your deployment URL (e.g., https://nexus.mailverge.info)

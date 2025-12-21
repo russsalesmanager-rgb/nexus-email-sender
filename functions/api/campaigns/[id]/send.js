@@ -18,11 +18,15 @@ export async function onRequestPost(context) {
   if (auth.error) return addCORSHeaders(auth.error, env);
   
   try {
-    // Verify Turnstile token
+    // Verify Turnstile token - require it if Turnstile is configured
     const body = await request.json();
     const { turnstile_token } = body;
     
-    if (env.TURNSTILE_SECRET && turnstile_token) {
+    if (env.TURNSTILE_SECRET) {
+      if (!turnstile_token) {
+        return addCORSHeaders(errorResponse('Turnstile required', 'Security token is required'), env);
+      }
+      
       const clientIP = request.headers.get('CF-Connecting-IP') || '';
       const isValid = await verifyTurnstile(turnstile_token, env.TURNSTILE_SECRET, clientIP);
       
