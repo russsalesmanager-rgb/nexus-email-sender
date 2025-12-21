@@ -1,0 +1,27 @@
+{
+  "name": "nexus-email-sender",
+  "version": "1.0.0",
+  "description": "Production-grade multi-tenant cold email + outreach platform on Cloudflare",
+  "main": "functions/[[path]].js",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler pages dev . --binding DB=placeholder --kv KV_CACHE --r2 R2_STORAGE",
+    "deploy": "wrangler pages deploy .",
+    "db:migrate": "wrangler d1 execute nexus-db --file=./migrations/001_init.sql",
+    "db:migrate-local": "wrangler d1 execute nexus-db --local --file=./migrations/001_init.sql",
+    "tail": "wrangler pages deployment tail"
+  },
+  "keywords": [
+    "email",
+    "outreach",
+    "cloudflare",
+    "saas",
+    "multi-tenant"
+  ],
+  "author": "Nexus Team",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^3.80.0"
+  },
+  "dependencies": {}
+}
