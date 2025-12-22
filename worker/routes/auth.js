@@ -101,7 +101,7 @@ export async function signup(request, env) {
     return response;
   } catch (error) {
     console.error('Signup error:', error);
-    return new Response(JSON.stringify({ ok: false, error: 'Signup failed', detail: error.message }), {
+    return new Response(JSON.stringify({ ok: false, error: 'Signup failed' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -188,7 +188,7 @@ export async function login(request, env) {
     return response;
   } catch (error) {
     console.error('Login error:', error);
-    return new Response(JSON.stringify({ ok: false, error: 'Login failed', detail: error.message }), {
+    return new Response(JSON.stringify({ ok: false, error: 'Login failed' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });

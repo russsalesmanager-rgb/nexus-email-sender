@@ -13,11 +13,11 @@ workers_dev = false
 [[d1_databases]]
 binding = "DB"
 database_name = "nexus-db"
-database_id = "YOUR_D1_DATABASE_ID"  # Set via wrangler d1 create
+database_id = "YOUR_D1_DATABASE_ID"  # Replace with: wrangler d1 create nexus-db
 
 [[kv_namespaces]]
 binding = "KV"
-id = "YOUR_KV_NAMESPACE_ID"  # Set via wrangler kv:namespace create
+id = "YOUR_KV_NAMESPACE_ID"  # Replace with: wrangler kv:namespace create NEXUS_KV
 
 [[r2_buckets]]
 binding = "R2"

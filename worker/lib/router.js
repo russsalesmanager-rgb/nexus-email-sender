@@ -79,7 +79,7 @@ export class Router {
   async handle(request, env, ctx) {
     // Handle CORS preflight
     if (request.method === 'OPTIONS') {
-      return this.corsResponse();
+      return this.corsResponse(env);
     }
 
     const matched = this.match(request);
@@ -90,11 +90,11 @@ export class Router {
 
     try {
       const response = await matched.handler(request, env, ctx, matched.params);
-      return this.addCorsHeaders(response);
+      return this.addCorsHeaders(response, env);
     } catch (error) {
       console.error('Route handler error:', error);
       return this.jsonResponse(
-        { ok: false, error: 'Internal server error', detail: error.message },
+        { ok: false, error: 'Internal server error' },
         500
       );
     }
@@ -115,31 +115,35 @@ export class Router {
   /**
    * Create a CORS preflight response
    */
-  corsResponse() {
+  corsResponse(env) {
     return new Response(null, {
       status: 204,
-      headers: this.getCorsHeaders(),
+      headers: this.getCorsHeaders(env),
     });
   }
 
   /**
    * Get CORS headers
    */
-  getCorsHeaders() {
+  getCorsHeaders(env) {
+    // Use APP_ORIGIN in production, wildcard in dev
+    const origin = env?.APP_ORIGIN || '*';
+    
     return {
-      'Access-Control-Allow-Origin': '*', // TODO: Restrict to APP_ORIGIN in production
+      'Access-Control-Allow-Origin': origin,
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       'Access-Control-Max-Age': '86400',
+      'Access-Control-Allow-Credentials': 'true',
     };
   }
 
   /**
    * Add CORS headers to a response
    */
-  addCorsHeaders(response) {
+  addCorsHeaders(response, env) {
     const newResponse = new Response(response.body, response);
-    const corsHeaders = this.getCorsHeaders();
+    const corsHeaders = this.getCorsHeaders(env);
     
     for (const [key, value] of Object.entries(corsHeaders)) {
       newResponse.headers.set(key, value);
