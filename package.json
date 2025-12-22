@@ -1,0 +1,28 @@
+{
+  "name": "nexus-email-sender",
+  "version": "1.0.0",
+  "description": "Multi-tenant email outreach SaaS on Cloudflare",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "deploy:pages": "wrangler pages deploy .",
+    "db:migrate": "wrangler d1 execute nexus-db --file=./migrations/001_init.sql",
+    "db:query": "wrangler d1 execute nexus-db --command",
+    "tail": "wrangler tail",
+    "lint": "echo 'No linting configured yet'"
+  },
+  "keywords": [
+    "email",
+    "outreach",
+    "saas",
+    "cloudflare",
+    "workers",
+    "d1"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}
