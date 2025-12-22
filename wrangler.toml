@@ -1,0 +1,66 @@
+name = "nexus-email-sender"
+main = "worker/index.js"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Account ID - set via wrangler login or environment
+# account_id = "YOUR_ACCOUNT_ID"
+
+# Workers configuration
+workers_dev = false
+
+# Bindings for Cloudflare services
+[[d1_databases]]
+binding = "DB"
+database_name = "nexus-db"
+database_id = "YOUR_D1_DATABASE_ID"  # Set via wrangler d1 create
+
+[[kv_namespaces]]
+binding = "KV"
+id = "YOUR_KV_NAMESPACE_ID"  # Set via wrangler kv:namespace create
+
+[[r2_buckets]]
+binding = "R2"
+bucket_name = "nexus-uploads"
+
+[[queues.producers]]
+binding = "SEND_QUEUE"
+queue = "send-jobs"
+
+[[queues.consumers]]
+queue = "send-jobs"
+max_batch_size = 10
+max_batch_timeout = 30
+
+# Durable Objects for per-org schedulers
+[[durable_objects.bindings]]
+name = "SCHEDULER"
+class_name = "OrgScheduler"
+script_name = "nexus-email-sender"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["OrgScheduler"]
+
+# Environment variables (secrets should be set via: wrangler secret put ENCRYPTION_KEY_B64)
+[vars]
+APP_ORIGIN = "https://nexus-email-sender.pages.dev"
+RATE_LIMIT_WINDOW = "60"
+RATE_LIMIT_MAX = "100"
+
+# Development configuration
+[env.dev]
+name = "nexus-email-sender-dev"
+workers_dev = true
+
+[env.dev.vars]
+APP_ORIGIN = "http://localhost:8788"
+
+# Production build
+[build]
+command = "echo 'No build needed for vanilla JS'"
+
+# Routes for custom domain (configure after Pages deployment)
+# [[routes]]
+# pattern = "api.yourdomain.com/*"
+# zone_name = "yourdomain.com"
