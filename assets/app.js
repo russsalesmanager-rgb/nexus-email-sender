@@ -617,7 +617,7 @@ const App = {
       <div style="background: #000; padding: 1rem; border-radius: 4px; font-family: monospace; overflow-x: auto;">
         <code style="color: var(--success);">${UI.escapeHtml(code)}</code>
       </div>
-      <button class="btn" style="width: 100%; margin-top: 1rem;" onclick="navigator.clipboard.writeText('${code.replace(/'/g, "\\'")}'); UI.toast('Copied!', 'success');">
+      <button class="btn" style="width: 100%; margin-top: 1rem;" onclick="navigator.clipboard.writeText(\`${code}\`); UI.toast('Copied!', 'success');">
         Copy Code
       </button>
     `;
